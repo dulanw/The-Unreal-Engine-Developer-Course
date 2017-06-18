@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Grabber.generated.h"
-
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BUILDINGESCAPE_API UGrabber : public UActorComponent
@@ -27,6 +27,23 @@ public:
 private:
 	UPROPERTY(EditAnywhere)
 	float Reach = 100.f;
-		
+
+	UPhysicsHandleComponent* PhysicsHandle = nullptr;
+	UInputComponent* InputComponent = nullptr;
 	
+	///ray cast and grab item
+	void Grab();
+
+	void Release();
+
+	///find assumed attached physics handle
+	void FindPhysicsHandleComponent();
+
+	///find assumed attached input componenet
+	void SetInputComponent();
+
+	//return hit for first physics body in reach
+	const FHitResult GetFirstPhysicsBodyInReach();
+
 };
+
