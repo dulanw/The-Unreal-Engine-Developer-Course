@@ -45,5 +45,13 @@ private:
 	//return hit for first physics body in reach
 	const FHitResult GetFirstPhysicsBodyInReach();
 
+	///basically the player location/ actor location
+	const FVector GetReachLineStart();
+
+	///get the LineTrace End point, so where to position the object you are holding
+	///also used to check if there is an object in range to grab
+	const FVector GetReachLineEnd();
+
+	
 };
 
