@@ -22,7 +22,6 @@ protected:
 	virtual void BeginPlay() override;
 
 	void OpenDoor();
-
 	void CloseDoor();
 
 public:	
@@ -42,7 +41,6 @@ private:
 	float DoorLastOpenTime;
 
 	AActor* Owner;
-	AActor* ActorThatOpens;
 
-
+	const float GetTotalMassOfActorsOnPlate();
 };

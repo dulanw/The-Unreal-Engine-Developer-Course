@@ -3,7 +3,6 @@
 #include "Grabber.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/PlayerController.h"
-#include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 #include "Classes/Components/InputComponent.h"
 
@@ -31,7 +30,7 @@ void UGrabber::BeginPlay()
 
 void UGrabber::FindPhysicsHandleComponent()
 {
-	///Look for attachd physics handle
+	///Look for attached physics handle
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
 	if (PhysicsHandle == nullptr)
 	{
