@@ -2,12 +2,11 @@
 
 #include "Grabber.h"
 #include "GameFramework/Actor.h"
-#include "GameFramework/PlayerController.h"
-#include "DrawDebugHelpers.h"
-#include "Classes/Components/InputComponent.h"
-#include "Classes/Components/PrimitiveComponent.h"
+//#include "GameFramework/PlayerController.h"
+//#include "DrawDebugHelpers.h"
+//#include "Classes/Components/PrimitiveComponent.h"
+//#include "Engine/World.h"
 #define OUT
-
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()

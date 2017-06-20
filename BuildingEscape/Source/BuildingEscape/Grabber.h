@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Classes/Components/InputComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Grabber.generated.h"
 
@@ -39,7 +40,7 @@ private:
 	///find assumed attached physics handle
 	void FindPhysicsHandleComponent();
 
-	///find assumed attached input componenet
+	///find assumed attached input component
 	void SetInputComponent();
 
 	//return hit for first physics body in reach
