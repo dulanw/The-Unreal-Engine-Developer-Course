@@ -1,6 +1,6 @@
 # 04_BattleTank Game in Unreal Engine 4 #
 
-Repository for [here](https://www.udemy.com/unrealcourse/)
+Repository for online video lecture on udemy [here](https://www.udemy.com/unrealcourse/)
 
 ### What is this repository for? ###
 
