@@ -2,10 +2,8 @@
 
 #include "Grabber.h"
 #include "GameFramework/Actor.h"
-//#include "GameFramework/PlayerController.h"
-//#include "DrawDebugHelpers.h"
-//#include "Classes/Components/PrimitiveComponent.h"
-//#include "Engine/World.h"
+#include "CollisionQueryParams.h"
+#include "Components/PrimitiveComponent.h"
 #define OUT
 
 // Sets default values for this component's properties
@@ -44,6 +42,7 @@ void UGrabber::SetInputComponent()
 	{
 		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
 		InputComponent->BindAction("Grab", IE_Released, this, &UGrabber::Release);
+
 	}
 
 	else
@@ -73,6 +72,7 @@ void UGrabber::Release()
 {
 	if (!PhysicsHandle) { return; }
 	PhysicsHandle->ReleaseComponent();
+
 }
 
 // Called every frame
@@ -84,6 +84,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	if (PhysicsHandle->GrabbedComponent)
 	{
 		PhysicsHandle->SetTargetLocation(GetReachLineEnd());
+		
 	}
 
 }

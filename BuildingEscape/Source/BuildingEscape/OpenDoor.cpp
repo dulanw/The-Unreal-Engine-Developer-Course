@@ -2,7 +2,7 @@
 
 #include "OpenDoor.h"
 #include "GameFramework/Actor.h"
-//#include "Classes/Components/PrimitiveComponent.h"
+#include "Components/PrimitiveComponent.h"
 
 #define OUT
 
