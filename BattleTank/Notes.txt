@@ -1,0 +1,2 @@
+Convert camera blueprint to c++.
+Optional inherit roll for SpringArm.

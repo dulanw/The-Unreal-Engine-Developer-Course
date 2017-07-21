@@ -77,4 +77,4 @@ Intermediate/*
 DerivedDataCache/*
 
 #ignore starter content
-StarterContent/*
+Content/StarterContent/*
