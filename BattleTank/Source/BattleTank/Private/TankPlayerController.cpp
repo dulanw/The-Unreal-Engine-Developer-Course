@@ -12,13 +12,19 @@ ATank* ATankPlayerController::GetControllledTank() const
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("Player Controller BeginPlay!") );
+	//UE_LOG(LogTemp, Warning, TEXT("Player Controller BeginPlay!") );
 	auto ControlledTank = GetControllledTank();
 	if (!ControlledTank)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("No pawn possessed"));
 	}
 	else
-		UE_LOG(LogTemp, Warning, TEXT("Possesed Pawn: %s"), *GetPawn()->GetName());
+		UE_LOG(LogTemp, Warning, TEXT("Possesed Pawn: %s"), *(GetPawn()->GetName()) );
 
+}
+
+void ATankPlayerController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	UE_LOG(LogTemp, Warning, TEXT("Player Controller ticking!"));
 }

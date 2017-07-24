@@ -15,10 +15,13 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
-public:
+private:
 		ATank* GetControllledTank() const;
-
 		//our begin play overrides the original.
+
+public:
 		virtual void BeginPlay() override;
+		virtual void Tick(float DeltaTime) override;
+
 	
 };
