@@ -1,2 +1,3 @@
 Convert camera blueprint to c++.
 Optional inherit roll for SpringArm.
+Add global variable to spot the players (move tank to random spot within that location with x distance)
