@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Tank.h"
 #include "AIController.h"
-#include "TankAIController.generated.h"
+#include "TankAIController.generated.h"  //put new includes above this
 
 /**
  * 
@@ -20,7 +20,9 @@ private:
 	ATank* GetControlledTank() const;
 	ATank* GetPlayerTank() const;
 
-public:
+protected:
 	virtual void BeginPlay() override;
-	
+
+public:
+	virtual void Tick( float DeltaSeconds ) override;
 };

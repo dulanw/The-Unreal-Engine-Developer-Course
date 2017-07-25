@@ -8,22 +8,35 @@ void ATankAIController::BeginPlay()
 	Super::BeginPlay();
 	//checking if beingplay works
 	//UE_LOG(LogTemp, Warning, TEXT("AI Controller BeginPlay!"));
-	auto ControlledTank = GetControlledTank();
-	if (!ControlledTank)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No pawn possessed by AI"));
-	}
-	else
-		UE_LOG(LogTemp, Warning, TEXT("AI Possesed Pawn: %s"), *(GetPawn()->GetName()) );
 
-	auto PlayerTank = GetPlayerTank();
-	if (!PlayerTank)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No player found"));
-	}
-	else
-		UE_LOG(LogTemp, Warning, TEXT("AI tank: %s found Player pawn: %s"), *(GetPawn()->GetName()), *(PlayerTank->GetName()) );
 
+	//No need for the code below, just testing to make sure the the functions work as intended
+	//auto ControlledTank = GetControlledTank();
+	//if (!ControlledTank)
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("No pawn possessed by AI"));
+	//}
+	//else
+	//	UE_LOG(LogTemp, Warning, TEXT("AI Possesed Pawn: %s"), *(GetPawn()->GetName()) );
+
+	//auto PlayerTank = GetPlayerTank();
+	//if (!PlayerTank)
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("No player found"));
+	//}
+	//else
+	//	UE_LOG(LogTemp, Warning, TEXT("AI tank: %s found Player pawn: %s"), *(GetPawn()->GetName()), *(PlayerTank->GetName()) );
+
+}
+
+void ATankAIController::Tick( float DeltaSeconds )
+{
+	Super::Tick( DeltaSeconds );
+	if (GetPlayerTank() && GetControlledTank())
+	{
+		GetControlledTank()->AimAt(GetPlayerTank()->GetActorLocation());
+	}
+	
 }
 
 ATank * ATankAIController::GetPlayerTank() const
@@ -37,3 +50,4 @@ ATank* ATankAIController::GetControlledTank() const
 	//cast the getpawn to a ATank type
 	return Cast<ATank>(GetPawn());
 }
+

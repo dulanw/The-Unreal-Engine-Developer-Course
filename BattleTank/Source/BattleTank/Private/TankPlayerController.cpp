@@ -12,13 +12,16 @@ ATank* ATankPlayerController::GetControllledTank() const
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	//No need for the code below, just testing to make sure the the functions work as intended
+	//sdfsdf
 	//UE_LOG(LogTemp, Warning, TEXT("Player Controller BeginPlay!") );
-	if (!GetControllledTank())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No pawn possessed"));
-	}
-	else
-		UE_LOG(LogTemp, Warning, TEXT("Player Possesing Pawn: %s"), *(GetPawn()->GetName()) );
+	//if (!GetControllledTank())
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("No pawn possessed"));
+	//}
+	//else
+	//	UE_LOG(LogTemp, Warning, TEXT("Player Possesing Pawn: %s"), *(GetPawn()->GetName()) );
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
@@ -36,7 +39,7 @@ void ATankPlayerController::AimTowardsCrosshair()
 	FVector HitLocation;
 	if (GetSightHitLocation(HitLocation))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Hit Location: %s"), *HitLocation.ToString());
+		GetControllledTank()->AimAt(HitLocation);
 	}
 	
 }
@@ -77,7 +80,8 @@ bool ATankPlayerController::GetLookVectorHitLocation(FVector LookDirection, FVec
 	if (GetWorld()->LineTraceSingleByChannel(HitResult,StartLocation,EndLocation,ECollisionChannel::ECC_Visibility))
 	{
 		HitLocationOUT = HitResult.Location;
-		UE_LOG(LogTemp,Warning,TEXT("Hit Actor: %s"),*HitResult.GetActor()->GetName())
+		//get the object that is hit
+		//UE_LOG(LogTemp,Warning,TEXT("Hit Actor: %s"),*HitResult.GetActor()->GetName())
 		return true;
 	}
 	return false;
