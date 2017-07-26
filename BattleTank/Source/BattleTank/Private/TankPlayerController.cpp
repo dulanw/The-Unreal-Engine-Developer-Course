@@ -13,15 +13,6 @@ void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//No need for the code below, just testing to make sure the the functions work as intended
-	//sdfsdf
-	//UE_LOG(LogTemp, Warning, TEXT("Player Controller BeginPlay!") );
-	//if (!GetControllledTank())
-	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("No pawn possessed"));
-	//}
-	//else
-	//	UE_LOG(LogTemp, Warning, TEXT("Player Possesing Pawn: %s"), *(GetPawn()->GetName()) );
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
