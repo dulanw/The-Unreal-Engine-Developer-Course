@@ -3,10 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Tank.h"
 #include "GameFramework/PlayerController.h"
 #include "TankPlayerController.generated.h"  //put new includes above this
 
+
+class ATank;
 /**
  * 
  */
@@ -21,6 +22,7 @@ private:
 	//move the tank barrel toward where the crosshair is pointed toward
 	void AimTowardsCrosshair();
 	bool GetSightHitLocation(FVector &HitLocationOUT) const;
+	bool GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection) const;
 	UPROPERTY(EditAnywhere)
 		float CrosshairXLocation = 0.5f;
 	UPROPERTY(EditAnywhere)

@@ -8,6 +8,7 @@
 #include "Tank.generated.h" //put new includes above this
 
 class UTankBarrel;
+class UTankTurrent;
 
 UCLASS()
 class BATTLETANK_API ATank : public APawn
@@ -21,6 +22,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetBarrelReference(UTankBarrel* BarrelToSet);
 
+	UFUNCTION(BlueprintCallable)
+		void SetTurrentReference(UTankTurrent* TurrentToSet);
 
 protected:
 	// Called when the game starts or when spawned
@@ -37,5 +40,5 @@ private:
 	
 
 	UPROPERTY(EditAnywhere, Category = Firing)
-		float LaunchSpeed = 100000.f;
+		float LaunchSpeed = 10000.f;
 };
