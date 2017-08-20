@@ -24,9 +24,9 @@ private:
 	bool GetSightHitLocation(FVector &HitLocationOUT) const;
 	bool GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection) const;
 	UPROPERTY(EditAnywhere)
-		float CrosshairXLocation = 0.5f;
+		float CrosshairXLocation = 0.50f;
 	UPROPERTY(EditAnywhere)
-		float CrosshairYLocation = 0.33333f;
+		float CrosshairYLocation = 0.350f;
 	UPROPERTY(EditAnywhere)
 		float LineTraceRange = 1000000;
 	bool GetLookVectorHitLocation(FVector LookDirection, FVector &HitLocationOUT) const;
@@ -38,5 +38,6 @@ protected:
 public:
 	//our begin play overrides the original.
 	virtual void Tick(float DeltaTime) override;
+	void SetAimPointPosition(FVector2D AimPointPosition);
 	
 };

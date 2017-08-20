@@ -13,12 +13,14 @@ ATank::ATank()
 void ATank::SetBarrelReference(UTankBarrel * BarrelToSet)
 {
 	TankAimingComponent->SetBarrelReference(BarrelToSet);
+
 }
 
 void ATank::SetTurrentReference(UTankTurrent* TurrentToSet)
 {
 	TankAimingComponent->SetTurrentReference(TurrentToSet);
 }
+
 
 // Called when the game starts or when spawned
 void ATank::BeginPlay()
@@ -46,3 +48,7 @@ void ATank::AimAt(FVector HitLocation)
 	TankAimingComponent->AimAt(HitLocation, LaunchSpeed);
 }
 
+void ATank::Fire()
+{
+	UE_LOG(LogTemp, Warning, TEXT("%f: Tank Firing"), GetWorld()->GetTimeSeconds());
+}

@@ -14,7 +14,6 @@ ATank* ATankPlayerController::GetControllledTank() const
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
@@ -23,6 +22,14 @@ void ATankPlayerController::Tick(float DeltaTime)
 	AimTowardsCrosshair();
 	///testing to see if tick function works as intended
 	///UE_LOG(LogTemp, Warning, TEXT("Player Controller ticking!"));
+}
+
+void ATankPlayerController::SetAimPointPosition(FVector2D AimPointPosition)
+{
+	CrosshairXLocation = AimPointPosition.X;
+	CrosshairYLocation = AimPointPosition.Y;
+
+	UE_LOG(LogTemp, Warning, TEXT("X = %f,Y = %f"), CrosshairXLocation, CrosshairYLocation);
 }
 
 void ATankPlayerController::AimTowardsCrosshair()
