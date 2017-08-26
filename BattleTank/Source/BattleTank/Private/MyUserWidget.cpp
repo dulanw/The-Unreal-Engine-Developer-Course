@@ -3,7 +3,7 @@
 #include "MyUserWidget.h"
 #include "Runtime/UMG/Public/Blueprint/WidgetLayoutLibrary.h"
 #include "Runtime/UMG/Public/Components/CanvasPanelSlot.h"
-#include "Engine/World.h"
+#include "Runtime/UMG/Public/Components/Image.h"
 #include "TankPlayerController.h"
 
 void UMyUserWidget::SetAimPointReference(UImage * AimPoint)
