@@ -29,7 +29,7 @@ void ATankPlayerController::SetAimPointPosition(FVector2D AimPointPosition)
 	CrosshairXLocation = AimPointPosition.X;
 	CrosshairYLocation = AimPointPosition.Y;
 
-	UE_LOG(LogTemp, Warning, TEXT("X = %f,Y = %f"), CrosshairXLocation, CrosshairYLocation);
+	//UE_LOG(LogTemp, Warning, TEXT("X = %f,Y = %f"), CrosshairXLocation, CrosshairYLocation);
 }
 
 void ATankPlayerController::AimTowardsCrosshair()

@@ -9,6 +9,7 @@
 class UTankBarrel;
 class AProjectile;
 class UTankAimingComponent;
+class UTankMovementComponent;
 
 UCLASS()
 class BATTLETANK_API ATank : public APawn
@@ -31,7 +32,10 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	UTankAimingComponent* TankAimingComponent = nullptr;
+	UTankAimingComponent * TankAimingComponent = nullptr;
+
+	UPROPERTY(BlueprintReadOnly)
+		UTankMovementComponent * TankMovementComponent = nullptr;
 
 private:
 	// Sets default values for this pawn's properties
@@ -52,6 +56,7 @@ private:
 		TSubclassOf<AProjectile> ProjectileBlueprint;
 
 	UTankBarrel* TankBarrel = nullptr;
+
 
 	double LastFiredInSeconds = 0;
 };
