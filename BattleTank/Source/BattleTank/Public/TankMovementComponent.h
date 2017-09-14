@@ -9,7 +9,10 @@
 /**
  * 
  */
-UCLASS()
+
+class UTankTrack;
+
+UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class BATTLETANK_API UTankMovementComponent : public UNavMovementComponent
 {
 	GENERATED_BODY()
@@ -18,5 +21,12 @@ class BATTLETANK_API UTankMovementComponent : public UNavMovementComponent
 public:
 	UFUNCTION(BlueprintCallable)
 		void IntendMoveForward(float ControlThrow);
+
+	UFUNCTION(BlueprintCallable)
+		void Initialise(UTankTrack* LeftTrackToSet, UTankTrack* RightTrackToSet);
+
+private:
+	UTankTrack* LeftTrack = nullptr;
+	UTankTrack* RightTrack = nullptr;
 	
 };
