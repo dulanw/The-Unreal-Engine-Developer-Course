@@ -6,7 +6,6 @@
 #include "AIController.h"
 #include "TankAIController.generated.h"  //put new includes above this
 
-class ATank;
 /**
  * 
  */
@@ -20,5 +19,8 @@ protected:
 
 public:
 	virtual void Tick( float DeltaSeconds ) override;
+
+	UPROPERTY(EditDefaultsOnly)
+		float AcceptanceRadius = 300.0f;
 
 };

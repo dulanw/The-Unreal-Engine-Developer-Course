@@ -4,6 +4,7 @@
 #include "TankBarrel.h"
 #include "TankTurrent.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
+#include "Projectile.h"
 
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
@@ -15,18 +16,14 @@ UTankAimingComponent::UTankAimingComponent()
 	// ...
 }
 
-
-void UTankAimingComponent::SetBarrelReference(UTankBarrel * BarrelToSet)
+void UTankAimingComponent::Initialise(UTankBarrel * BarrelToSet, UTankTurrent* TurrentToSet)
 {
-	if (!BarrelToSet) { return; }
+	if (!BarrelToSet || !TurrentToSet) { return; }
+
+	Turrent = TurrentToSet;	
 	Barrel = BarrelToSet;
 }
 
-void UTankAimingComponent::SetTurrentReference(UTankTurrent* TurrentToSet)
-{
-	if (!TurrentToSet) { return; }
-	Turrent = TurrentToSet;
-}
 
 // Called when the game starts
 void UTankAimingComponent::BeginPlay()
@@ -46,7 +43,7 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
-void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
+void UTankAimingComponent::AimAt(FVector HitLocation)
 {
 	if (!Barrel || !Turrent) { return; }
 	FVector LaunchVelocityOUT;
@@ -72,6 +69,8 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 
 void UTankAimingComponent::MoveBarrel(FVector AimDirection)
 {
+	if (ensure(!Barrel || !Turrent)) { return; }
+
 	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
 	auto AimAsRotator = AimDirection.Rotation();
 	auto DeltaRotator = AimAsRotator - BarrelRotator;
@@ -79,6 +78,23 @@ void UTankAimingComponent::MoveBarrel(FVector AimDirection)
 	Turrent->Rotate(DeltaRotator.Yaw);
 }
 
+void UTankAimingComponent::Fire()
+{
+	if (!ensure(Barrel && ProjectileBlueprint)) { return; }
+
+	bool isReloaded = (FPlatformTime::Seconds() - LastFiredInSeconds) > ReloadTimeInSeconds;
+
+	if (isReloaded)
+	{
+		FVector BarrelEndLocation = Barrel->GetSocketLocation(FName("Projectile"));
+		FRotator BarrelEndRotation = Barrel->GetSocketRotation(FName("Projectile"));
+		//UE_LOG(LogTemp, Warning, TEXT("Firing Location: %s"), *BarrelEndLocation.ToString());
+
+		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, BarrelEndLocation, BarrelEndRotation);
+		Projectile->LaunchProjectile(LaunchSpeed);
+		LastFiredInSeconds = FPlatformTime::Seconds();
+	}
+}
 
 
 

@@ -1,45 +1,40 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankPlayerController.h"
-#include "Tank.h"
-
-
-ATank* ATankPlayerController::GetControllledTank() const
-{
-	//cast the getpawn to a ATank type
-	return Cast<ATank>(GetPawn());
-}
-
+#include "TankAimingComponent.h"
 
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+
+	if (ensure(AimingComponent))
+		FoundAimingComponent(AimingComponent);
+
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	AimTowardsCrosshair();
-	///testing to see if tick function works as intended
-	///UE_LOG(LogTemp, Warning, TEXT("Player Controller ticking!"));
+
 }
 
 void ATankPlayerController::SetAimPointPosition(FVector2D AimPointPosition)
 {
 	CrosshairXLocation = AimPointPosition.X;
 	CrosshairYLocation = AimPointPosition.Y;
-
-	//UE_LOG(LogTemp, Warning, TEXT("X = %f,Y = %f"), CrosshairXLocation, CrosshairYLocation);
 }
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
-	if (!GetControllledTank()) { return; }
+	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+	if (!ensure(AimingComponent)) { return; }
 	
 	FVector HitLocationOUT;
 	if (GetSightHitLocation(HitLocationOUT))
 	{
-		GetControllledTank()->AimAt(HitLocationOUT);
+		AimingComponent->AimAt(HitLocationOUT);
 	}
 	
 }
