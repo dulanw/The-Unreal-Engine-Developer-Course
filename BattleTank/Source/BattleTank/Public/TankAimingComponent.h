@@ -37,14 +37,14 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(BlueprintReadOnly)
-		EFiringStatus FiringStatus = EFiringStatus::Aiming;
+		EFiringStatus FiringStatus = EFiringStatus::Reloading;
 		
 private:
 	// Sets default values for this component's properties
 	UTankAimingComponent();
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
+	bool IsBarrelMoving();
 	void MoveBarrel(FVector AimDirection);
 
 	UTankBarrel* Barrel = nullptr;
@@ -60,4 +60,8 @@ private:
 		TSubclassOf<AProjectile> ProjectileBlueprint;
 
 	double LastFiredInSeconds = 0;
+
+	FVector AimDirection;
+
+
 };	
