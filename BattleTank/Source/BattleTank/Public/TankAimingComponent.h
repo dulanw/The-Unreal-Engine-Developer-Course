@@ -45,6 +45,8 @@ private:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	bool IsBarrelMoving();
+
 	void MoveBarrel(FVector AimDirection);
 
 	UTankBarrel* Barrel = nullptr;
@@ -60,4 +62,6 @@ private:
 		TSubclassOf<AProjectile> ProjectileBlueprint;
 
 	double LastFiredInSeconds = 0;
+
+	FVector AimDirection;
 };	

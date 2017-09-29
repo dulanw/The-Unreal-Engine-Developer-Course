@@ -28,6 +28,7 @@ void ATankPlayerController::SetAimPointPosition(FVector2D AimPointPosition)
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
+	if (!GetPawn()) { return; }
 	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 	if (!ensure(AimingComponent)) { return; }
 	

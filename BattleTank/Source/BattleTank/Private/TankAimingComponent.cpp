@@ -29,7 +29,7 @@ void UTankAimingComponent::Initialise(UTankBarrel * BarrelToSet, UTankTurrent* T
 void UTankAimingComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
+	LastFiredInSeconds = FPlatformTime::Seconds();
 	// ...
 	
 }
@@ -40,7 +40,26 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if ((FPlatformTime::Seconds() - LastFiredInSeconds) < ReloadTimeInSeconds)
+	{
+		FiringStatus = EFiringStatus::Reloading;
+	}
+	else if (IsBarrelMoving())
+	{
+		FiringStatus = EFiringStatus::Aiming;
+	}
+	else
+	{
+		FiringStatus = EFiringStatus::Locked;
+	}
 	// ...
+}
+
+bool UTankAimingComponent::IsBarrelMoving()
+{
+	if (!ensure(Barrel)) { return false; }
+
+	return !(AimDirection.Equals(Barrel->GetForwardVector(), 0.01));
 }
 
 void UTankAimingComponent::AimAt(FVector HitLocation)
@@ -53,18 +72,10 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 
 	if (bHaveAimSolution)
 	{
-		//auto Time = GetWorld()->GetTimeSeconds();
-		//auto OurTankName = GetOwner()->GetName();
-		//UE_LOG(LogTemp, Warning, TEXT("%f : %s  Found Aim Solution for %s"), Time, *OurTankName, *HitLocation.ToString());
-		auto AimDirection = LaunchVelocityOUT.GetSafeNormal();
+		AimDirection = LaunchVelocityOUT.GetSafeNormal();
 		MoveBarrel(AimDirection);
 	}
-	//else
-	//{
-	//	auto Time = GetWorld()->GetTimeSeconds();
-	//	UE_LOG(LogTemp, Warning, TEXT("%f : No Aim solution found for %s"), Time, *HitLocation.ToString());
 
-	//}
 }
 
 void UTankAimingComponent::MoveBarrel(FVector AimDirection)
@@ -82,9 +93,7 @@ void UTankAimingComponent::Fire()
 {
 	if (!ensure(Barrel && ProjectileBlueprint)) { return; }
 
-	bool isReloaded = (FPlatformTime::Seconds() - LastFiredInSeconds) > ReloadTimeInSeconds;
-
-	if (isReloaded)
+	if (FiringStatus != EFiringStatus::Reloading)
 	{
 		FVector BarrelEndLocation = Barrel->GetSocketLocation(FName("Projectile"));
 		FRotator BarrelEndRotation = Barrel->GetSocketRotation(FName("Projectile"));
