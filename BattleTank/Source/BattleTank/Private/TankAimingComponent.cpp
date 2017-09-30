@@ -40,7 +40,11 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if ((FPlatformTime::Seconds() - LastFiredInSeconds) < ReloadTimeInSeconds)
+	if (RoundsLeft <= 0 && RoundsLoaded <= 0)
+	{
+		FiringStatus = EFiringStatus::OutOfAmmo;
+	}
+	else if ((FPlatformTime::Seconds() - LastFiredInSeconds) < ReloadTimeInSeconds)
 	{
 		FiringStatus = EFiringStatus::Reloading;
 	}
@@ -52,6 +56,15 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	{
 		FiringStatus = EFiringStatus::Locked;
 	}
+
+	if ((PreviousFiringStatus == EFiringStatus::Reloading && FiringStatus == EFiringStatus::Aiming) || (PreviousFiringStatus == EFiringStatus::Reloading && FiringStatus == EFiringStatus::Locked))
+	{
+		RoundsLoaded++;
+		RoundsLeft--;
+	}
+
+	PreviousFiringStatus = FiringStatus;
+
 	// ...
 }
 
@@ -86,14 +99,22 @@ void UTankAimingComponent::MoveBarrel(FVector AimDirection)
 	auto AimAsRotator = AimDirection.Rotation();
 	auto DeltaRotator = AimAsRotator - BarrelRotator;
 	Barrel->Elevate(DeltaRotator.Pitch);
-	Turrent->Rotate(DeltaRotator.Yaw);
+
+	if(FMath::Abs(DeltaRotator.Yaw) < 180)
+	{
+		Turrent->Rotate(DeltaRotator.Yaw);
+	}
+	else
+	{
+		Turrent->Rotate(-DeltaRotator.Yaw);
+	}
 }
 
 void UTankAimingComponent::Fire()
 {
 	if (!ensure(Barrel && ProjectileBlueprint)) { return; }
 
-	if (FiringStatus != EFiringStatus::Reloading)
+	if (FiringStatus == EFiringStatus::Aiming || FiringStatus == EFiringStatus::Locked)
 	{
 		FVector BarrelEndLocation = Barrel->GetSocketLocation(FName("Projectile"));
 		FRotator BarrelEndRotation = Barrel->GetSocketRotation(FName("Projectile"));
@@ -102,7 +123,26 @@ void UTankAimingComponent::Fire()
 		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, BarrelEndLocation, BarrelEndRotation);
 		Projectile->LaunchProjectile(LaunchSpeed);
 		LastFiredInSeconds = FPlatformTime::Seconds();
+		RoundsLoaded--;
 	}
+}
+
+EFiringStatus UTankAimingComponent::GetFiringStatus() const
+{
+	return FiringStatus;
+}
+
+FString UTankAimingComponent::GetRoundsLeft() const
+{
+	FString R = FString(TEXT("--"));
+	if (RoundsLoaded == 0)
+		R = "--";
+	else if (RoundsLoaded == 1)
+		R = "1";
+
+	FString Ammo = R + "/" + FString::FromInt(RoundsLeft);
+
+	return Ammo;
 }
 
 

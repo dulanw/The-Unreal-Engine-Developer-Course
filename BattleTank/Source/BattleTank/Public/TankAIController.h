@@ -20,7 +20,7 @@ protected:
 public:
 	virtual void Tick( float DeltaSeconds ) override;
 
-	UPROPERTY(EditDefaultsOnly)
-		float AcceptanceRadius = 300.0f;
+	UPROPERTY(EditAnywhere)
+		float AcceptanceRadius = 10000.0f;
 
 };

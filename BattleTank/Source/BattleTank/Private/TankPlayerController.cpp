@@ -56,9 +56,9 @@ bool ATankPlayerController::GetSightHitLocation(FVector &HitLocationOUT) const
 
 	if (GetLookDirection(ScreenLocation,WorldDirection)) //get the screen position in the 3d world, return false if not found
 	{
-		GetLookVectorHitLocation(WorldDirection, HitLocationOUT);
+		return GetLookVectorHitLocation(WorldDirection, HitLocationOUT);
 	}
-	return true;
+	return false;
 }
 
 
