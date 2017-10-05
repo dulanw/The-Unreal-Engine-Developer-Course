@@ -14,8 +14,7 @@ class BATTLETANK_API ATank : public APawn
 
 
 public:
-	void AimAt(FVector HitLocation);
-
+	void AimAt(FVector HitLocation);	
 
 protected:
 	// Called when the game starts or when spawned
@@ -28,5 +27,4 @@ private:
 	virtual void Tick(float DeltaTime) override;
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
 };

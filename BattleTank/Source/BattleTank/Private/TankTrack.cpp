@@ -5,7 +5,6 @@
 UTankTrack::UTankTrack()
 {
 	PrimaryComponentTick.bCanEverTick = false;
-	OnComponentHit.AddDynamic(this, &UTankTrack::OnHit);
 }
 
 void UTankTrack::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
@@ -18,6 +17,12 @@ void UTankTrack::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UP
 void UTankTrack::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	UE_LOG(LogTemp, Warning, TEXT("Hello"));
+	//FVector Velocity = GetComponentVelocity();
+	//UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetName(), Velocity.Size());
+	/*Velocity.GetClampedToMaxSize(3000.f);
+	ComponentVelocity.Set(Velocity.X, Velocity.Y, Velocity.Z);*/
+
 }
 
 void UTankTrack::ApplySidewaysForce()
@@ -45,4 +50,8 @@ void UTankTrack::DriveTrack()
 	TankRoot->AddForceAtLocation(ForceApplied, ForceLocation);
 }
 
+void UTankTrack::BeginPlay()
+{
+	OnComponentHit.AddDynamic(this, &UTankTrack::OnHit);
+}
 

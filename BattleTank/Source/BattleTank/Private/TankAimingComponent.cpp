@@ -6,6 +6,7 @@
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Projectile.h"
 
+
 // Sets default values for this component's properties
 UTankAimingComponent::UTankAimingComponent()
 {
@@ -18,8 +19,6 @@ UTankAimingComponent::UTankAimingComponent()
 
 void UTankAimingComponent::Initialise(UTankBarrel * BarrelToSet, UTankTurrent* TurrentToSet)
 {
-	if (!BarrelToSet || !TurrentToSet) { return; }
-
 	Turrent = TurrentToSet;	
 	Barrel = BarrelToSet;
 }
@@ -29,9 +28,8 @@ void UTankAimingComponent::Initialise(UTankBarrel * BarrelToSet, UTankTurrent* T
 void UTankAimingComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	LastFiredInSeconds = FPlatformTime::Seconds();
 	// ...
-	
+	StartReload();
 }
 
 
@@ -44,26 +42,15 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	{
 		FiringStatus = EFiringStatus::OutOfAmmo;
 	}
-	else if ((FPlatformTime::Seconds() - LastFiredInSeconds) < ReloadTimeInSeconds)
-	{
-		FiringStatus = EFiringStatus::Reloading;
-	}
-	else if (IsBarrelMoving())
+
+	else if (IsBarrelMoving() && FiringStatus != EFiringStatus::Reloading)
 	{
 		FiringStatus = EFiringStatus::Aiming;
 	}
-	else
+	else if (FiringStatus != EFiringStatus::Reloading)
 	{
 		FiringStatus = EFiringStatus::Locked;
 	}
-
-	if ((PreviousFiringStatus == EFiringStatus::Reloading && FiringStatus == EFiringStatus::Aiming) || (PreviousFiringStatus == EFiringStatus::Reloading && FiringStatus == EFiringStatus::Locked))
-	{
-		RoundsLoaded++;
-		RoundsLeft--;
-	}
-
-	PreviousFiringStatus = FiringStatus;
 
 	// ...
 }
@@ -93,7 +80,7 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 
 void UTankAimingComponent::MoveBarrel(FVector AimDirection)
 {
-	if (ensure(!Barrel || !Turrent)) { return; }
+	if (!ensure(Barrel) || !ensure(Turrent)) { return; }
 
 	auto BarrelRotator = Barrel->GetForwardVector().Rotation();
 	auto AimAsRotator = AimDirection.Rotation();
@@ -112,18 +99,27 @@ void UTankAimingComponent::MoveBarrel(FVector AimDirection)
 
 void UTankAimingComponent::Fire()
 {
-	if (!ensure(Barrel && ProjectileBlueprint)) { return; }
+	
+
+	if (!EnableFire) { return; }
 
 	if (FiringStatus == EFiringStatus::Aiming || FiringStatus == EFiringStatus::Locked)
 	{
+		if (!ensure(Barrel)) { return; }
+		if (!ensure(ProjectileBlueprint)) { return; }
+
 		FVector BarrelEndLocation = Barrel->GetSocketLocation(FName("Projectile"));
 		FRotator BarrelEndRotation = Barrel->GetSocketRotation(FName("Projectile"));
 		//UE_LOG(LogTemp, Warning, TEXT("Firing Location: %s"), *BarrelEndLocation.ToString());
 
 		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, BarrelEndLocation, BarrelEndRotation);
 		Projectile->LaunchProjectile(LaunchSpeed);
-		LastFiredInSeconds = FPlatformTime::Seconds();
 		RoundsLoaded--;
+		if (RoundsLeft > 0)
+		{
+			StartReload();
+		}
+			
 	}
 }
 
@@ -137,7 +133,7 @@ FString UTankAimingComponent::GetRoundsLeft() const
 	FString R = FString(TEXT("--"));
 	if (RoundsLoaded == 0)
 		R = "--";
-	else if (RoundsLoaded == 1)
+	else if (RoundsLoaded != 0)
 		R = "1";
 
 	FString Ammo = R + "/" + FString::FromInt(RoundsLeft);
@@ -145,5 +141,18 @@ FString UTankAimingComponent::GetRoundsLeft() const
 	return Ammo;
 }
 
+void UTankAimingComponent::StartReload()
+{
+	GetWorld()->GetTimerManager().SetTimer(ReloadTimer, this, &UTankAimingComponent::FinishReload, ReloadTimeInSeconds);
+	FiringStatus = EFiringStatus::Reloading;
+}
+
+void UTankAimingComponent::FinishReload()
+{
+	RoundsLoaded++;
+	RoundsLeft--;
+	GetWorld()->GetTimerManager().ClearTimer(ReloadTimer);
+	FiringStatus = EFiringStatus::Aiming;
+}
 
 

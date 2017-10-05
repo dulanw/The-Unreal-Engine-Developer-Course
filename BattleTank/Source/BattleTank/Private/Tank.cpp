@@ -1,9 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Tank.h"
-#include "TankBarrel.h"
-#include "Projectile.h"
-#include "TankMovementComponent.h"
 
 // Sets default values
 ATank::ATank()
@@ -31,4 +28,3 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
-

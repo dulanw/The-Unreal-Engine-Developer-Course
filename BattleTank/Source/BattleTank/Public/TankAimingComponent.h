@@ -50,11 +50,8 @@ private:
 	UTankAimingComponent();
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
 	bool IsBarrelMoving();
-
 	void MoveBarrel(FVector AimDirection);
-
 	UTankBarrel* Barrel = nullptr;
 	UTankTurrent* Turrent = nullptr;
 
@@ -67,12 +64,17 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Setup")
 		TSubclassOf<AProjectile> ProjectileBlueprint;
 
-	double LastFiredInSeconds = 0;
-
 	FVector AimDirection;
 
-	int32 RoundsLeft = 3;
+	UPROPERTY(EditDefaultsOnly, Category = "Setup")
+		int32 RoundsLeft = 3;
+
 	int32 RoundsLoaded = 0;
 
-	EFiringStatus PreviousFiringStatus = FiringStatus;
+	FTimerHandle ReloadTimer;
+	void FinishReload();
+	void StartReload();
+
+	UPROPERTY(EditAnywhere)
+		bool EnableFire = true;
 };	
