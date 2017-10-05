@@ -56,14 +56,16 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 	LaunchBlast->Deactivate();
 	ImpactBlast->Activate();
 	ExplosionForce->FireImpulse();
-	
+	UE_LOG(LogTemp, Warning, TEXT("Impulse fired"));
 	SetRootComponent(ImpactBlast);
 	CollisionMesh->DestroyComponent();
-
-	GetWorld()->GetTimerManager().SetTimer(DestroyTimer, this, &AProjectile::OnTimerExpire,false);
+	UE_LOG(LogTemp, Warning, TEXT("component destroyed"));
+	GetWorld()->GetTimerManager().SetTimer(DestroyTimer, this, &AProjectile::OnTimerExpire,DestroyDelay,false);
+	UE_LOG(LogTemp, Warning, TEXT("Timer manager set"));
 }
 
 void AProjectile::OnTimerExpire()
 {
-	this->Destroy();
+	UE_LOG(LogTemp, Warning, TEXT("Destroyed"));
+	Destroy();
 }
