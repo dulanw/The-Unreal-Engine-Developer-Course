@@ -30,11 +30,17 @@ private:
 	UPROPERTY(EditAnywhere)
 		float LineTraceRange = 1000000;
 
+	virtual void SetPawn(APawn* InPawn) override;
+
+	UFUNCTION()
+		void OnPossessedTankDeath();
+
 	bool GetLookVectorHitLocation(FVector LookDirection, FVector &HitLocationOUT) const;
 
 protected:
 	virtual void BeginPlay() override;
 
+	// Use this instead of being play to make sure that aiming component is there before calling the rest on blueprint
 	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")
 		void FoundAimingComponent(UTankAimingComponent* AimCompRef);
 

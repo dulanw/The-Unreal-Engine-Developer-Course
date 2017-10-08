@@ -4,6 +4,8 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "PhysicsEngine/RadialForceComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/DamageType.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -14,6 +16,7 @@ AProjectile::AProjectile()
 	CollisionMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Projectile Collision Mesh"));
 	SetRootComponent(CollisionMesh);
 	CollisionMesh->SetNotifyRigidBodyCollision(true);
+	CollisionMesh->bVisible = false;
 
 	LaunchBlast = CreateDefaultSubobject<UParticleSystemComponent>(FName("Projectile Launch Blast"));
 	LaunchBlast->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
@@ -56,16 +59,19 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 	LaunchBlast->Deactivate();
 	ImpactBlast->Activate();
 	ExplosionForce->FireImpulse();
-	UE_LOG(LogTemp, Warning, TEXT("Impulse fired"));
+
 	SetRootComponent(ImpactBlast);
 	CollisionMesh->DestroyComponent();
-	UE_LOG(LogTemp, Warning, TEXT("component destroyed"));
+
+
+	UGameplayStatics::ApplyRadialDamage(this, ProjectileDamage, GetActorLocation(), ExplosionForce->Radius, UDamageType::StaticClass(), TArray<AActor*>());
+
 	GetWorld()->GetTimerManager().SetTimer(DestroyTimer, this, &AProjectile::OnTimerExpire,DestroyDelay,false);
-	UE_LOG(LogTemp, Warning, TEXT("Timer manager set"));
+
 }
 
 void AProjectile::OnTimerExpire()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Destroyed"));
 	Destroy();
 }
+

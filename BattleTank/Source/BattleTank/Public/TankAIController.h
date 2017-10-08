@@ -14,6 +14,12 @@ class BATTLETANK_API ATankAIController : public AAIController
 {
 	GENERATED_BODY()
 
+private:
+	virtual void SetPawn(APawn* InPawn) override;
+
+	UFUNCTION()
+		void OnPossessedTankDeath();
+
 protected:
 	virtual void BeginPlay() override;
 

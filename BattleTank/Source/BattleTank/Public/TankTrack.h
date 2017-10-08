@@ -23,9 +23,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Custom")
 		float TrackMaxDrivingForce = 400000; // 48 tonne tank and 1g of acceleration
 
-	UPROPERTY(EditDefaultsOnly, category = "Custom")
-		float MaxVelocity = 2000.f;
-
 private:
 	UTankTrack();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -39,6 +36,12 @@ private:
 	void DriveTrack();
 
 	float CurrentThrottle = 0.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Custom")
+		float MaxForwardVelocity = 2000.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Custom")
+		float MaxUpVelocity = 50.f;
 
 	//Max Velocity of tank, in cm/s
 	

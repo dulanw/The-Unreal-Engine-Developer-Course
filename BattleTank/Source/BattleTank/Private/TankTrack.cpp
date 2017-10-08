@@ -5,6 +5,7 @@
 UTankTrack::UTankTrack()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+	SetNotifyRigidBodyCollision(true);
 }
 
 void UTankTrack::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
@@ -16,13 +17,46 @@ void UTankTrack::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UP
 
 void UTankTrack::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	//UE_LOG(LogTemp, Warning, TEXT("Hello"));
-	FVector Velocity = GetComponentVelocity();
-	UE_LOG(LogTemp, Warning, TEXT("%s : %f"), *GetName(), Velocity.Size());
-	Velocity.GetClampedToMaxSize(MaxVelocity);
-	ComponentVelocity.Set(Velocity.X, Velocity.Y, Velocity.Z);
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);	
 
+	FVector CurrentVelocity = GetComponentVelocity();
+	FVector NewForwardVelocity = FVector(CurrentVelocity.X, CurrentVelocity.Y, 0);
+
+	if (NewForwardVelocity.Size() > MaxForwardVelocity)
+	{
+		NewForwardVelocity = NewForwardVelocity.GetClampedToSize(0, MaxForwardVelocity);
+		NewForwardVelocity = FVector(NewForwardVelocity.X, NewForwardVelocity.Y, CurrentVelocity.Z);
+
+		SetAllPhysicsLinearVelocity(NewForwardVelocity, false);
+	}
+
+	
+
+	//UE_LOG(LogTemp, Warning, TEXT("UpVector = %f"), NewUpVelocity.Size());
+
+	//if (GetComponentVelocity().Z > 1)
+	//{
+	//	FVector NewUpVelocity = FVector(0, 0, GetComponentVelocity().Z);
+	//	if (NewUpVelocity.Size() > MaxUpVelocity)
+	//	{
+	//		NewUpVelocity = NewUpVelocity.GetClampedToSize(0, MaxUpVelocity);
+	//		NewUpVelocity = FVector(GetComponentVelocity().X, GetComponentVelocity().Y, -GetComponentVelocity().Z);
+	//		SetAllPhysicsLinearVelocity(NewUpVelocity, false);
+
+	//		//auto TankRoot = Cast<UStaticMeshComponent>(GetOwner()->GetRootComponent());
+	//		//auto ArtificalGravity = -NewUpVelocity.Size() / DeltaTime*GetUpVector();
+	//		//auto CorrectionForce = (TankRoot->GetMass()*ArtificalGravity) / 2;
+	//		//TankRoot->AddForce(CorrectionForce);
+	//	}
+
+	//}
+
+	//if (NewUpVelocity.Size() > MaxUpVelocity)
+	//{
+	//	NewUpVelocity = FVector(GetComponentVelocity().X, GetComponentVelocity().Y, -NewUpVelocity.Z);
+	//	SetAllPhysicsLinearVelocity(NewUpVelocity,false);
+	//	//SetAllPhysicsLinearVelocity
+	//}
 }
 
 void UTankTrack::ApplySidewaysForce()
@@ -36,6 +70,7 @@ void UTankTrack::ApplySidewaysForce()
 	auto CorrectionForce = (TankRoot->GetMass()*CorrectionAcceleration) / 2;
 	TankRoot->AddForce(CorrectionForce);
 }
+
 
 void UTankTrack::SetThrottle(float Throttle)
 {
