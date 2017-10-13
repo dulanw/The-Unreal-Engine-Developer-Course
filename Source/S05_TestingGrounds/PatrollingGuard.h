@@ -16,7 +16,7 @@ class S05_TESTINGGROUNDS_API APatrollingGuard : public ATP_ThirdPersonCharacter
 	
 public:
 	UPROPERTY(EditInstanceOnly, Category = "Patrol Route")
-		TArray<AActor*> PatrolPointsC;
+		TArray<AActor*> PatrolPointsCPP;
 
 	
 	
