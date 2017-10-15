@@ -13,7 +13,8 @@ class S05_TESTINGGROUNDS_API UPatrolRoute : public UActorComponent
 	GENERATED_BODY()
 
 public:
-	TArray<AActor*> GetPatrolPoints() const;
+	UFUNCTION(BlueprintCallable)
+		TArray<AActor*> GetPatrolPoints() const;
 
 private:
 	UPROPERTY(EditInstanceOnly, Category = "Patrol Route")
