@@ -69,11 +69,6 @@ void AFirstPersonCharacter::BeginPlay()
 		Gun = GetWorld()->SpawnActor<AGun>(GunBlueprint);
 		Gun->AttachToComponent(Mesh1P, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), TEXT("GripPoint"));
 
-		if (EnableTouchscreenMovement(InputComponent) == false)
-		{
-			InputComponent->BindAction("Fire", IE_Pressed, Gun, &AGun::OnFire);
-		}
-
 		Gun->AnimInstance = Mesh1P->GetAnimInstance();
 	}
 
@@ -105,11 +100,17 @@ void AFirstPersonCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	//InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AFirstPersonCharacter::TouchStarted);
+	if (EnableTouchscreenMovement(InputComponent) == false)
+	{
+		PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AFirstPersonCharacter::Fire);
+	}
 
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AFirstPersonCharacter::OnResetVR);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AFirstPersonCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AFirstPersonCharacter::MoveRight);
+
+
 
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
@@ -118,6 +119,16 @@ void AFirstPersonCharacter::SetupPlayerInputComponent(class UInputComponent* Pla
 	PlayerInputComponent->BindAxis("TurnRate", this, &AFirstPersonCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AFirstPersonCharacter::LookUpAtRate);
+}
+
+void AFirstPersonCharacter::Fire()
+{
+	if (!Gun)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No Gun Attached to player, Cannot fire!"));
+		return;
+	}
+	Gun->OnFire();
 }
 
 void AFirstPersonCharacter::OnResetVR()

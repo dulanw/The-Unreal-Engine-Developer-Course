@@ -78,6 +78,8 @@ protected:
 	 */
 	void LookUpAtRate(float Rate);
 
+	void Fire();
+
 	struct TouchData
 	{
 		TouchData() { bIsPressed = false;Location=FVector::ZeroVector;}
