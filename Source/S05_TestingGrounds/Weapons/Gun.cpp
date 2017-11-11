@@ -4,7 +4,9 @@
 #include "Animation/AnimInstance.h"
 #include "BallProjectile.h"
 #include "Kismet/GameplayStatics.h"
-
+#include "TimerManager.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Character/Mannequin.h"
 
 // Sets default values
 AGun::AGun()
@@ -14,9 +16,10 @@ AGun::AGun()
 
 	// Create a gun mesh component
 	FP_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Gun"));
-	FP_Gun->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
+	//FP_Gun->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
 	FP_Gun->bCastDynamicShadow = false;
 	FP_Gun->CastShadow = false;
+	//FP_Gun->SetHiddenInGame(false);
 	// FP_Gun->SetupAttachment(Mesh1P, TEXT("GripPoint"));
 	FP_Gun->SetupAttachment(RootComponent);
 
@@ -24,21 +27,14 @@ AGun::AGun()
 	FP_MuzzleLocation->SetupAttachment(FP_Gun);
 	FP_MuzzleLocation->SetRelativeLocation(FVector(0.2f, 68.4f, 10.6f));
 	FP_MuzzleLocation->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
+	
+}
 
-	////Figure out how to implement this later so you are able to use VR controller
-	//// Create a gun and attach it to the right-hand VR controller.
-	//// Create a gun mesh component
-	//VR_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("VR_Gun"));
-	//VR_Gun->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
-	//VR_Gun->bCastDynamicShadow = false;
-	//VR_Gun->CastShadow = false;
-	//VR_Gun->SetupAttachment(R_MotionController);
-	//VR_Gun->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
-
-	//VR_MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("VR_MuzzleLocation"));
-	//VR_MuzzleLocation->SetupAttachment(VR_Gun);
-	//VR_MuzzleLocation->SetRelativeLocation(FVector(0.000004, 53.999992, 10.000000));
-	//VR_MuzzleLocation->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));		// Counteract the rotation of the VR gun model.
+//run after construction but before beingplay, after the object is spawned and/or when placed in the editor
+void AGun::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+	TimeBetweenShots = 60 / FireRate;
 
 }
 
@@ -46,6 +42,7 @@ AGun::AGun()
 void AGun::BeginPlay()
 {
 	Super::BeginPlay();
+	//UE_LOG(LogTemp, Warning, TEXT("Owner: %s"), *GetOwner()->GetName());
 	
 }
 
@@ -59,7 +56,7 @@ void AGun::Tick(float DeltaTime)
 void AGun::OnFire()
 {
 	// try and fire a projectile
-	if (ProjectileClass != NULL)
+	if (ProjectileClass != NULL && isFirstPerson)
 	{
 		UWorld* const World = GetWorld();
 		if (World != NULL)
@@ -85,13 +82,72 @@ void AGun::OnFire()
 	}
 
 	// try and play a firing animation if specified
-	if (FireAnimation != NULL)
+	if (FPFireAnimation != NULL)
 	{
 		// Get the animation object for the arms mesh
 		//UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
-		if (AnimInstance != NULL)
+		if (FPAnimInstance != NULL)
 		{
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
+			FPAnimInstance->Montage_Play(FPFireAnimation, 1.f);
+
 		}
 	}
+
+	if (TPFireAnimation != NULL)
+	{
+		if (TPAnimInstance != NULL)
+		{
+			TPAnimInstance->Montage_Play(TPFireAnimation,1.f);
+		}
+	}
+
+	GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, this, &AGun::OnFire, TimeBetweenShots, false);
+	LastFireTime = GetWorld()->GetTimeSeconds();
+}
+
+void AGun::TriggerPulled()
+{
+	//UE_LOG(LogTemp, Warning, TEXT("Timer Started!"));
+	const float GameTime = GetWorld()->GetTimeSeconds();
+	bool bTooSoon = TimeBetweenShots > GameTime - LastFireTime;
+	if (bTooSoon)
+	{
+		GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, this, &AGun::OnFire,  TimeBetweenShots + LastFireTime - GameTime, false);
+	}
+	else
+	{
+		OnFire();
+	}
+	
+}
+
+void AGun::TriggerReleased()
+{
+	GetWorld()->GetTimerManager().ClearTimer(FireRateTimerHandle);
+}
+
+void AGun::SetOwningPawn(AMannequin* Char)
+{
+	OwnerChar = Char;
+	SetOwner(Char);
+}
+
+void AGun::SetIsFirstPerson(bool SetFirstPerson)
+{
+	isFirstPerson = SetFirstPerson;
+	if (SetFirstPerson)
+	{
+		FP_Gun->bOnlyOwnerSee = true;
+		FP_Gun->bOwnerNoSee = false;
+	}
+	else
+	{
+		FP_Gun->bOnlyOwnerSee = false;
+		FP_Gun->bOwnerNoSee = true;
+	}
+}
+
+bool AGun::IsFirstPerson() const
+{
+	return isFirstPerson;
 }
