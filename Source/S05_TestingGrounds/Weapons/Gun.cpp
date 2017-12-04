@@ -17,8 +17,8 @@ AGun::AGun()
 	// Create a gun mesh component
 	FP_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Gun"));
 	//FP_Gun->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
-	FP_Gun->bCastDynamicShadow = false;
-	FP_Gun->CastShadow = false;
+	//FP_Gun->bCastDynamicShadow = false;
+	//FP_Gun->CastShadow = false;
 	//FP_Gun->SetHiddenInGame(false);
 	// FP_Gun->SetupAttachment(Mesh1P, TEXT("GripPoint"));
 	FP_Gun->SetupAttachment(RootComponent);
@@ -139,11 +139,18 @@ void AGun::SetIsFirstPerson(bool SetFirstPerson)
 	{
 		FP_Gun->bOnlyOwnerSee = true;
 		FP_Gun->bOwnerNoSee = false;
+		FP_Gun->bCastDynamicShadow = false;
+		FP_Gun->CastShadow = false;
 	}
 	else
 	{
 		FP_Gun->bOnlyOwnerSee = false;
 		FP_Gun->bOwnerNoSee = true;
+
+		//cast shadows for third person weapon
+		FP_Gun->bCastDynamicShadow = true;
+		FP_Gun->CastShadow = true;
+		FP_Gun->bCastHiddenShadow = true;
 	}
 }
 
