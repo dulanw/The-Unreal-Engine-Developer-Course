@@ -15,3 +15,6 @@ BuildingEscape/Content/StarterContent/HDRI
 *.suo
 *.VC.opendb
 *.sln
+
+BattleTank/Content/Levels/BattleGround.umap
+
