@@ -15,6 +15,12 @@ BuildingEscape/Content/StarterContent/HDRI
 *.suo
 *.VC.opendb
 *.sln
+*.vs
+*.opensdf
+*.opendb
+*.sdf
+*.xcodeproj
+*.xcworkspace
 
 BattleTank/Content/Levels/BattleGround.umap
-
+TestingGrounds/Content/Static/TestingGroundPack/
